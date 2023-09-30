@@ -12,17 +12,9 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const saltRounds = 3;
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hashedPass = await bcrypt.hash(createUserDto.password, salt);
-
-    const newUser = this.usersRepository.create({
-      userName: createUserDto.userName,
-      password: hashedPass,
-    });
-
-    return this.usersRepository.save(newUser);
+  async create(user: User): Promise<User> {
+    const createdUser = this.usersRepository.create(user);
+    return await this.usersRepository.save(createdUser);
   }
 
   async findAll(): Promise<User[]> {
