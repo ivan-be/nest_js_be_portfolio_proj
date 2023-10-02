@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PortfolioModule } from './portfolio/portfolio.module';
 import * as path from 'path';
 
 @Module({
@@ -32,8 +31,6 @@ import * as path from 'path';
     }),
 
     UsersModule,
-
-    PortfolioModule,
   ],
 })
 export class AppModule {}
