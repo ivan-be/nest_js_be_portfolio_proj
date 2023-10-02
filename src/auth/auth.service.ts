@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -12,42 +17,73 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
-    if (user?.password !== pass) {
-      throw new UnauthorizedException();
-    }
-    const payload = { sub: user.id, username: user.userName };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
-  }
+  async signIn(
+    createUserDto: CreateUserDto,
+  ): Promise<{ access_token: string }> {
+    const { userName, password } = createUserDto;
 
-  async register(createUserDto: CreateUserDto): Promise<User> {
-    const user = await this.usersService.findOne(createUserDto.userName);
-    const saltRounds = 3;
-    const salt = await bcrypt.genSalt(saltRounds);
-    const password = createUserDto.password;
+    const user = await this.usersService.findOne(userName);
 
-    if (user) {
-      throw new Error(
-        `${user.userName} - this username is already in use. Please choose a different username.`,
+    if (!user) {
+      throw new UnauthorizedException(
+        'User not found. Please check your credentials',
       );
     }
 
-    if (!password) {
-      throw new Error('Password is required');
-    }
-    if (!salt) {
-      throw new Error('Salt is required');
+    const isPasswordValid = await this.comparePasswords(
+      password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException(
+        'Invalid credentials. Your data in incorrect',
+      );
     }
 
-    const hashedPass = await bcrypt.hash(password, salt);
+    return { access_token: this.generateJwtToken(user) };
+  }
+
+  async register(
+    createUserDto: CreateUserDto,
+  ): Promise<{ access_token: string }> {
+    const userExists = await this.usersService.findOne(createUserDto.userName);
+
+    if (userExists) {
+      throw new UsernameAlreadyExistsException();
+    }
+
+    const hashedPassword = await this.hashPassword(createUserDto.password);
 
     const newUser = new User();
     newUser.userName = createUserDto.userName;
-    newUser.password = hashedPass;
+    newUser.password = hashedPassword;
 
-    return await this.usersService.create(newUser);
+    const savedUser = await this.usersService.create(newUser);
+
+    return { access_token: this.generateJwtToken(savedUser) };
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    const saltRounds = 10;
+    return bcrypt.hash(password, saltRounds);
+  }
+
+  private async comparePasswords(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(plainPassword, hashedPassword);
+  }
+
+  private generateJwtToken(user: User): string {
+    const payload = { sub: user.id, username: user.userName };
+    return this.jwtService.sign(payload);
+  }
+}
+
+export class UsernameAlreadyExistsException extends HttpException {
+  constructor() {
+    super('Username is already in use', HttpStatus.BAD_REQUEST);
   }
 }
