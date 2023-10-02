@@ -15,6 +15,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('register')
   async register(@Body() registerDto: CreateUserDto) {
-    return await this.authService.register(registerDto);
+    try {
+      const newUser = await this.authService.register(registerDto);
+      return { message: 'User is successfully register', user: newUser };
+    } catch (error) {
+      return { error: error.message };
+    }
   }
 }

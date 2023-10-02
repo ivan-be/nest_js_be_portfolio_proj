@@ -16,11 +16,11 @@ import * as path from 'path';
 
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: 'localhost',
-        port: 5431,
-        username: 'pasha_kuraksin',
-        password: 'postgre_pasha_password',
-        database: 'my_postgres_db_pasha',
+        host: configService.get<string>('HOST_NAME'),
+        port: configService.get<number>('HOST_PORT'),
+        username: configService.get<string>('HOST_USER'),
+        password: configService.get<string>('HOST_PASS'),
+        database: configService.get<string>('HOST_DB'),
         synchronize: true,
         logging: true,
         autoLoadEntities: true,

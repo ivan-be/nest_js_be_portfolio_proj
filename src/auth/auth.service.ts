@@ -24,9 +24,16 @@ export class AuthService {
   }
 
   async register(createUserDto: CreateUserDto): Promise<User> {
+    const user = await this.usersService.findOne(createUserDto.userName);
     const saltRounds = 3;
     const salt = await bcrypt.genSalt(saltRounds);
     const password = createUserDto.password;
+
+    if (user) {
+      throw new Error(
+        `${user.userName} - this username is already in use. Please choose a different username.`,
+      );
+    }
 
     if (!password) {
       throw new Error('Password is required');
