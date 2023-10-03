@@ -8,8 +8,16 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.username, signInDto.password);
+  async signIn(@Body() signInDto: CreateUserDto) {
+    try {
+      const newUser = await this.authService.signIn(signInDto);
+      return {
+        message: `Login successful! Welcome, ${signInDto.userName}`,
+        user: newUser,
+      };
+    } catch (error) {
+      return { error: error.message };
+    }
   }
 
   @HttpCode(HttpStatus.OK)
@@ -17,7 +25,10 @@ export class AuthController {
   async register(@Body() registerDto: CreateUserDto) {
     try {
       const newUser = await this.authService.register(registerDto);
-      return { message: 'User is successfully register', user: newUser };
+      return {
+        message: 'User is successfully register',
+        user: newUser,
+      };
     } catch (error) {
       return { error: error.message };
     }
