@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PortfolioEntity } from '../dto/portfolio.entity';
 import { Repository } from 'typeorm';
-import { Observable, from } from 'rxjs';
 
 @Injectable()
 export class PortfolioService {
@@ -11,8 +10,8 @@ export class PortfolioService {
     private readonly portfolioRepository: Repository<PortfolioEntity>,
   ) {}
 
-  create(createPortfolioDto: PortfolioEntity): Observable<PortfolioEntity> {
-    return from(this.portfolioRepository.save(createPortfolioDto));
+  create(createPortfolioDto: PortfolioEntity): Promise<PortfolioEntity> {
+    return this.portfolioRepository.save(createPortfolioDto);
   }
 
   async findAll(userId): Promise<PortfolioEntity[]> {
