@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import * as path from 'path';
+import { PortfolioModule } from './portfolio/portfolio.module';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import * as path from 'path';
         type: 'postgres',
         host: configService.get<string>('HOST_NAME'),
         port: configService.get<number>('HOST_PORT'),
-        username: configService.get<string>('HOST_USER'),
+        username: configService.get<string>('HOST_USERNAME'),
         password: configService.get<string>('HOST_PASS'),
         database: configService.get<string>('HOST_DB'),
         synchronize: true,
@@ -30,6 +31,7 @@ import * as path from 'path';
 
     UsersModule,
     AuthModule,
+    PortfolioModule,
   ],
 })
 export class AppModule {}
