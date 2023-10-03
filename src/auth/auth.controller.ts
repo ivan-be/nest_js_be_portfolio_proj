@@ -1,13 +1,16 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { SignInDecorator, SignUpDecorator } from './Swagger/ApiDecorators';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @HttpCode(HttpStatus.OK)
-  @Post('login')
+  @Post('signIn')
+  @SignInDecorator()
   async signIn(@Body() signInDto: CreateUserDto) {
     try {
       const newUser = await this.authService.signIn(signInDto);
@@ -20,11 +23,11 @@ export class AuthController {
     }
   }
 
-  @HttpCode(HttpStatus.OK)
-  @Post('register')
-  async register(@Body() registerDto: CreateUserDto) {
+  @Post('signUp')
+  @SignUpDecorator()
+  async signUp(@Body() registerDto: CreateUserDto) {
     try {
-      const newUser = await this.authService.register(registerDto);
+      const newUser = await this.authService.signUp(registerDto);
       return {
         message: 'User is successfully register',
         user: newUser,
