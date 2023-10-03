@@ -1,5 +1,12 @@
+import { ImageEntity } from 'src/image/image.entity';
 import { User } from 'src/users/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('portfolio')
 export class PortfolioEntity {
@@ -18,6 +25,6 @@ export class PortfolioEntity {
   @Column({ default: '' })
   description: string;
 
-  @Column('text', { default: [], array: true })
-  images: string[];
+  @OneToMany(() => ImageEntity, (image) => image.portfolio)
+  images: ImageEntity[];
 }
