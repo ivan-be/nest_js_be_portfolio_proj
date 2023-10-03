@@ -5,12 +5,13 @@ import {
   Get,
   Param,
   Post,
-  ParseIntPipe,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt.auth-guard';
 
 @Controller('users')
 @ApiTags('users')
@@ -32,8 +33,19 @@ export class UsersController {
     return this.usersService.findOne(name);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.usersService.remove(id);
+  @Get(':id')
+  findOneById(@Param('id') id: number): Promise<User> {
+    return this.usersService.findOneById(id);
+  }
+
+  @Delete()
+  @UseGuards(JwtAuthGuard)
+  async delete(@Req() req: any) {
+    try {
+      await this.usersService.deleteUser(req.user.id);
+      return { message: 'User deleted successfully' };
+    } catch (e) {
+      return { error: e.message };
+    }
   }
 }

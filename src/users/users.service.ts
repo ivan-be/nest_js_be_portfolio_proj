@@ -1,9 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +22,17 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { userName } });
   }
 
-  async remove(id: string): Promise<void> {
+  async findOneById(id: number): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { id } });
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    const user = this.findOneById(id);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
     await this.usersRepository.delete(id);
   }
 }
