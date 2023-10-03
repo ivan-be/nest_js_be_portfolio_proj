@@ -44,7 +44,7 @@ export class AuthService {
     return { access_token: this.generateJwtToken(user) };
   }
 
-  async register(
+  async signUp(
     createUserDto: CreateUserDto,
   ): Promise<{ access_token: string }> {
     const userExists = await this.usersService.findOne(createUserDto.userName);
