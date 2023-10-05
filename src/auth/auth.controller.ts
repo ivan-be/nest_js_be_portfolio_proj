@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { SignInDecorator, SignUpDecorator } from './Swagger/ApiDecorators';
+import { SignInApi, SignUpApi } from './Swagger/ApiDecorators';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -10,7 +10,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('signIn')
-  @SignInDecorator()
+  @SignInApi()
   async signIn(@Body() signInDto: CreateUserDto) {
     try {
       const newUser = await this.authService.signIn(signInDto);
@@ -24,7 +24,7 @@ export class AuthController {
   }
 
   @Post('signUp')
-  @SignUpDecorator()
+  @SignUpApi()
   async signUp(@Body() registerDto: CreateUserDto) {
     try {
       const newUser = await this.authService.signUp(registerDto);
