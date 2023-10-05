@@ -3,17 +3,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PortfolioEntity } from '../dto/portfolio.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from '../../users/users.service';
-import {User} from "../../users/user.entity";
+import { User } from '../../users/user.entity';
 
 @Injectable()
 export class PortfolioService {
   constructor(
-      @InjectRepository(PortfolioEntity)
-      private readonly portfolioRepository: Repository<PortfolioEntity>,
-      private readonly usersService: UsersService,
+    @InjectRepository(PortfolioEntity)
+    private readonly portfolioRepository: Repository<PortfolioEntity>,
+    private readonly usersService: UsersService,
   ) {}
 
-  async create(createPortfolioDto: { name: string; description: string; userId: number }): Promise<PortfolioEntity> {
+  async create(createPortfolioDto: {
+    name: string;
+    description: string;
+    userId: number;
+  }): Promise<PortfolioEntity> {
     return this.portfolioRepository.save(createPortfolioDto);
   }
 

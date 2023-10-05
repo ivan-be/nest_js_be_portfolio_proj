@@ -6,11 +6,16 @@ import { AuthModule } from './auth/auth.module';
 import * as path from 'path';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { ImageModule } from './image/image.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: path.resolve(__dirname, '..', '.env'),
+      isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: 'https://coll-bucket.s3.eu-north-1.amazonaws.com/',
     }),
 
     TypeOrmModule.forRootAsync({
