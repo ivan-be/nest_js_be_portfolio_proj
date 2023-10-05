@@ -4,7 +4,7 @@ import { CreateUserDtoExample } from './dtos/create-user-example.dto';
 import { CreateUserResponseDto } from './dtos/CreateUserResponseDto';
 import { ErrorResponseDto } from './dtos/ErrorResponeDto';
 
-export const signInDecorators = [
+export const signInApi = [
   ApiOperation({ summary: 'Login user' }),
   ApiParam({
     name: 'none',
@@ -23,11 +23,11 @@ export const signInDecorators = [
   }),
 ];
 
-export function SignInDecorator() {
-  return applyDecorators(...signInDecorators);
+export function SignInApi() {
+  return applyDecorators(...signInApi);
 }
 
-export const signUpDecorators = [
+export const signUpApi = [
   ApiOperation({ summary: 'New user SignUp' }),
   ApiParam({
     name: 'none',
@@ -46,6 +46,6 @@ export const signUpDecorators = [
   }),
 ];
 
-export function SignUpDecorator() {
-  return applyDecorators(...signInDecorators);
+export function SignUpApi() {
+  return applyDecorators(...signUpApi);
 }
