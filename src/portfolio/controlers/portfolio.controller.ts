@@ -1,12 +1,29 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { PortfolioService } from '../services/portfolio.service';
 import { PortfolioEntity } from '../dto/portfolio.entity';
+import {
+  CreateApi,
+  FindAllApi,
+  RemoveApi,
+} from '../Swagger/portfolio.api-decorators';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('users/:userName/portfolio')
+@ApiTags('portfolio')
 export class PortfolioController {
   constructor(private portfolioService: PortfolioService) {}
 
   @Get()
+  @FindAllApi()
   async findAll(
     @Param('userName') userName: string,
   ): Promise<PortfolioEntity[]> {
@@ -15,6 +32,7 @@ export class PortfolioController {
   }
 
   @Post()
+  @CreateApi()
   async create(
     @Param('userName') userName: string,
     @Body() portfolio: PortfolioEntity,
@@ -28,8 +46,14 @@ export class PortfolioController {
     return await this.portfolioService.create(portfolioData);
   }
 
+  @RemoveApi()
   @Delete(':portfolioId')
-  remove(@Param('portfolioId') portfolioId) {
-    return this.portfolioService.remove(portfolioId);
+  async remove(@Param('portfolioId') portfolioId: number) {
+    try {
+      await this.portfolioService.remove(portfolioId);
+      return { message: 'Portfolio deleted successfully' };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 }

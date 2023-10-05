@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PortfolioEntity } from '../dto/portfolio.entity';
 import { Repository } from 'typeorm';
@@ -29,8 +29,16 @@ export class PortfolioService {
     return this.portfolioRepository.findOneBy({ id: id });
   }
 
-  async remove(id: string): Promise<void> {
-    await this.portfolioRepository.delete(id);
+  async remove(portfolioId: number): Promise<void> {
+    const portfolio = await this.portfolioRepository.findOne({
+      where: { id: portfolioId },
+    });
+
+    if (!portfolio) {
+      throw new NotFoundException('Portfolio not found');
+    }
+
+    await this.portfolioRepository.remove(portfolio);
   }
 
   async findUserByUserName(userName: string): Promise<User> {
