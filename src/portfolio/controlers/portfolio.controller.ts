@@ -1,19 +1,28 @@
-import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
-import { PortfolioService } from '../services/portfolio.service';
-import { PortfolioEntity } from '../dto/portfolio.entity';
+import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
+import {PortfolioService} from '../services/portfolio.service';
+import {PortfolioEntity} from '../dto/portfolio.entity';
 
-@Controller('users/:userId/portfolio')
+@Controller('users/:userName/portfolio')
 export class PortfolioController {
   constructor(private portfolioService: PortfolioService) {}
 
   @Get()
-  findAll(@Param('userId') userId): Promise<PortfolioEntity[]> {
-    return this.portfolioService.findAll(userId);
+  async findAll(@Param('userName') userName: string): Promise<PortfolioEntity[]> {
+    const user = await this.portfolioService.findUserByUserName(userName);
+    return this.portfolioService.findAll(user.id);
   }
+
   @Post()
-  create(@Param('userId') userId, @Body() portfolio: PortfolioEntity) {
-    return this.portfolioService.create({ ...portfolio, userId });
+  async create(@Param('userName') userName: string, @Body() portfolio: PortfolioEntity) {
+    const user = await this.portfolioService.findUserByUserName(userName);
+    const portfolioData = {
+      name: portfolio.name,
+      description: portfolio.description,
+      userId: user.id,
+    };
+    return await this.portfolioService.create(portfolioData);
   }
+
   @Delete(':portfolioId')
   remove(@Param('portfolioId') portfolioId) {
     return this.portfolioService.remove(portfolioId);

@@ -12,13 +12,13 @@ export class ImageService {
   create(createImage: ImageEntity): Promise<ImageEntity> {
     return this.imageRepository.save(createImage);
   }
-  async findAll(portfolioId): Promise<ImageEntity[]> {
+  async findAll(portfolioId: number): Promise<ImageEntity[]> {
     return this.imageRepository.find({ where: [{ portfolioId: portfolioId }] });
   }
   async remove(imageId): Promise<void> {
     await this.imageRepository.remove(imageId);
   }
-  async findOne(imageId): Promise<ImageEntity> {
+  async findOne(imageId: number): Promise<ImageEntity> {
     return this.imageRepository.findOne({ where: [{ id: imageId }] });
   }
   async updateImage(id: number, image: ImageEntity, newImage) {
