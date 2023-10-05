@@ -55,6 +55,7 @@ export class ImageService {
         Bucket: this.configService.getOrThrow('BUCKET'),
         Key: fileName,
         Body: newImage,
+        ContentType: 'image/png',
       }),
     );
     const region = this.configService.getOrThrow('AWS_S3_REGION');
@@ -69,6 +70,7 @@ export class ImageService {
           Bucket: 'coll-bucket',
           Key: fileName,
           Body: file,
+          ContentType: 'image/png',
         }),
       )
       .then((data) => console.log(data));
