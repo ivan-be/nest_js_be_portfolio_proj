@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { PortfolioService } from '../services/portfolio.service';
 import { PortfolioEntity } from '../dto/portfolio.entity';
@@ -16,6 +17,7 @@ import {
   RemoveApi,
 } from '../Swagger/portfolio.api-decorators';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../auth/jwt-auth/jwt.auth-guard';
 
 @Controller('users/:userName/portfolio')
 @ApiTags('portfolio')
@@ -24,6 +26,7 @@ export class PortfolioController {
 
   @Get()
   @FindAllApi()
+  @UseGuards(JwtAuthGuard)
   async findAll(
     @Param('userName') userName: string,
   ): Promise<PortfolioEntity[]> {
@@ -33,6 +36,7 @@ export class PortfolioController {
 
   @Post()
   @CreateApi()
+  @UseGuards(JwtAuthGuard)
   async create(
     @Param('userName') userName: string,
     @Body() portfolio: PortfolioEntity,
@@ -48,6 +52,7 @@ export class PortfolioController {
 
   @RemoveApi()
   @Delete(':portfolioId')
+  @UseGuards(JwtAuthGuard)
   async remove(@Param('portfolioId') portfolioId: number) {
     try {
       await this.portfolioService.remove(portfolioId);

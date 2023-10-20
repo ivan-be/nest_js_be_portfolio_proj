@@ -21,12 +21,8 @@ export class PortfolioService {
     return this.portfolioRepository.save(createPortfolioDto);
   }
 
-  async findAll(userId): Promise<PortfolioEntity[]> {
+  async findAll(userId: number): Promise<PortfolioEntity[]> {
     return this.portfolioRepository.find({ where: [{ userId: userId }] });
-  }
-
-  async findOne(id: number): Promise<PortfolioEntity> {
-    return this.portfolioRepository.findOneBy({ id: id });
   }
 
   async remove(portfolioId: number): Promise<void> {

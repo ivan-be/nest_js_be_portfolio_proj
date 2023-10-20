@@ -66,7 +66,7 @@ export class ImageController {
     file: Express.Multer.File,
   ) {
     try {
-      return this.imageService.uploadSOmething(file.originalname, file.buffer);
+      return this.imageService.uploadSomething(file.originalname, file.buffer);
     } catch {
       return 'Cant do this anymore';
     }

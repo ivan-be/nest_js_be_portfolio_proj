@@ -12,6 +12,7 @@ import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth/jwt.auth-guard';
+import { Request } from 'express';
 
 @Controller('users')
 @ApiTags('users')
@@ -40,9 +41,9 @@ export class UsersController {
 
   @Delete()
   @UseGuards(JwtAuthGuard)
-  async delete(@Req() req: any) {
+  async delete(@Req() req: Request) {
     try {
-      await this.usersService.deleteUser(req.user.id);
+      await this.usersService.deleteUser(req.body.user.id);
       return { message: 'User deleted successfully' };
     } catch (e) {
       return { error: e.message };

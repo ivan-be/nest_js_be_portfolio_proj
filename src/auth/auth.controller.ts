@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {Body, Controller, HttpException, HttpStatus, Post} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -19,7 +19,7 @@ export class AuthController {
         user: newUser,
       };
     } catch (error) {
-      return { error: error.message };
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
 

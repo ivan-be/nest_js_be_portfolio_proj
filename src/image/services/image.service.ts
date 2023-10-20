@@ -63,7 +63,7 @@ export class ImageService {
       source: `https://coll-bucket.s3.${region}.amazonaws.com/${fileName}`,
     });
   }
-  async uploadSOmething(fileName: string, file: Buffer) {
+  async uploadSomething(fileName: string, file: Buffer) {
     await this.s3Client
       .send(
         new PutObjectCommand({
